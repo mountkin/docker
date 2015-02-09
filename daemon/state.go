@@ -20,6 +20,7 @@ type State struct {
 	Error      string // contains last known error when starting the container
 	StartedAt  time.Time
 	FinishedAt time.Time
+	Stopping   bool
 	waitChan   chan struct{}
 }
 

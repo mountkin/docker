@@ -716,6 +716,7 @@ func (container *Container) Stop(seconds int) error {
 		return nil
 	}
 
+	container.Stopping = true
 	// 1. Send a SIGTERM
 	if err := container.killPossiblyDeadProcess(15); err != nil {
 		log.Infof("Failed to send SIGTERM to the process, force killing")

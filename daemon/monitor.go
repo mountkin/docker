@@ -175,7 +175,11 @@ func (m *containerMonitor) Start() error {
 		if exitStatus.OOMKilled {
 			m.container.LogEvent("oom")
 		}
-		m.container.LogEvent("die")
+
+		if !m.container.Stopping {
+			m.container.LogEvent("die")
+		}
+
 		m.resetContainer(true)
 		return err
 	}
@@ -315,4 +319,5 @@ func (m *containerMonitor) resetContainer(lock bool) {
 		Dir:         c.Dir,
 		SysProcAttr: c.SysProcAttr,
 	}
+	container.Stopping = false
 }
