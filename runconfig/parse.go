@@ -63,6 +63,7 @@ func Parse(cmd *flag.FlagSet, args []string) (*Config, *HostConfig, *flag.FlagSe
 		flMacAddress      = cmd.String([]string{"-mac-address"}, "", "Container MAC address (e.g. 92:d0:c6:0a:29:33)")
 		flIpcMode         = cmd.String([]string{"-ipc"}, "", "IPC namespace to use")
 		flRestartPolicy   = cmd.String([]string{"-restart"}, "", "Restart policy to apply when a container exits")
+		flIpAddress       = cmd.String([]string{"-ip-address"}, "", "Container IP address (e.g. 172.16.1.28)")
 		flReadonlyRootfs  = cmd.Bool([]string{"-read-only"}, false, "Mount the container's root filesystem as read only")
 	)
 
@@ -286,6 +287,7 @@ func Parse(cmd *flag.FlagSet, args []string) (*Config, *HostConfig, *flag.FlagSe
 		Image:           image,
 		Volumes:         flVolumes.GetMap(),
 		MacAddress:      *flMacAddress,
+		IpAddress:       *flIpAddress,
 		Entrypoint:      entrypoint,
 		WorkingDir:      *flWorkingDir,
 	}
