@@ -22,13 +22,17 @@ type State struct {
 	Restarting        bool
 	OOMKilled         bool
 	removalInProgress bool // Not need for this to be persistent on disk.
-	Dead              bool
-	Pid               int
-	ExitCode          int
-	Error             string // contains last known error when starting the container
-	StartedAt         time.Time
-	FinishedAt        time.Time
-	waitChan          chan struct{}
+	// If a container was created with different graph driver,
+	// its state will be set as "Broken" and the user can delete it later.
+	// See https://github.com/docker/docker/pull/17389#discussion_r43595659
+	Broken     bool
+	Dead       bool
+	Pid        int
+	ExitCode   int
+	Error      string // contains last known error when starting the container
+	StartedAt  time.Time
+	FinishedAt time.Time
+	waitChan   chan struct{}
 }
 
 // NewState creates a default state object with a fresh channel for state changes.
@@ -40,6 +44,10 @@ func NewState() *State {
 
 // String returns a human-readable description of the state
 func (s *State) String() string {
+	if s.Broken {
+		return "Broken"
+	}
+
 	if s.Running {
 		if s.Paused {
 			return fmt.Sprintf("Up %s (Paused)", units.HumanDuration(time.Now().UTC().Sub(s.StartedAt)))

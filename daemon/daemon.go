@@ -303,10 +303,10 @@ func (daemon *Daemon) restore() error {
 		// Ignore the container if it does not support the current driver being used by the graph
 		if (container.Driver == "" && currentDriver == "aufs") || container.Driver == currentDriver {
 			logrus.Debugf("Loaded container %v", container.ID)
-
 			containers[container.ID] = &cr{container: container}
 		} else {
 			logrus.Debugf("Cannot load container %s because it was created with another graph driver.", container.ID)
+			daemon.markContainerAsBroken(container)
 		}
 	}
 
@@ -366,6 +366,18 @@ func (daemon *Daemon) restore() error {
 	}
 
 	return nil
+}
+
+func (daemon *Daemon) markContainerAsBroken(c *Container) {
+	c.Broken = true
+	c.daemon = daemon
+	c.Running = false
+	c.Paused = false
+	if c.Config != nil {
+		logrus.Debugf("broken container.image: %s", c.Config.Image)
+	}
+	daemon.containers.Add(c.ID, c)
+	daemon.idIndex.Add(c.ID)
 }
 
 func (daemon *Daemon) mergeAndVerifyConfig(config *runconfig.Config, img *image.Image) error {

@@ -252,6 +252,10 @@ func (container *Container) Start() (err error) {
 		return nil
 	}
 
+	if container.Broken {
+		return fmt.Errorf("The container %s was created with another graph driver and can't be started", container.ID[:12])
+	}
+
 	if container.removalInProgress || container.Dead {
 		return derr.ErrorCodeContainerBeingRemoved
 	}
