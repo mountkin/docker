@@ -587,7 +587,7 @@ for containers. If user uses disk quota for btrfs when creating or running
 a container with **--storage-opt size** option, docker should ensure the
 **size** cannot be smaller than **btrfs.min_space**.
 
-Example use: `docker daemon -s btrfs --storage-opt btrfs.min_space=10G`
+Example use: `dockerd -s btrfs --storage-opt btrfs.min_space=10G`
 
 # CLUSTER STORE OPTIONS
 
